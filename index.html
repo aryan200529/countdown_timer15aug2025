@@ -1,0 +1,133 @@
+<html>
+<head>
+    <title>Count Down Timer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style>
+        /* Page background */
+        body {
+            background-color: #eaf0f6; /* soft blue-gray */
+            font-family: Cambria, serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Heading */
+        h1 {
+            margin-top: 40px;
+            color: #2c3e50;
+        }
+
+        /* Card container */
+        form {
+            background: #ffffff;
+            max-width: 360px;
+            margin: 30px auto;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Input field */
+        input[type="number"] {
+            width: 80%;
+            padding: 12px;
+            font-size: 1.1em;
+            border: 1.5px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        /* Input focus effect */
+        input[type="number"]:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 8px rgba(52,152,219,0.3);
+        }
+
+        /* Submit button */
+        input[type="submit"] {
+            margin-top: 18px;
+            padding: 12px 20px;
+            font-size: 1.1em;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        /* Button hover effect */
+        input[type="submit"]:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+
+        /* Message display */
+        #msg {
+            font-weight: bold;
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>⏳ Count Down Timer App</h1>
+    <form onsubmit="show(event)">
+        <input type="number" id="time" placeholder="Enter time in seconds" min="1"/>
+        <br/><br/>
+        <input type="submit" value="Start Timer" />
+    </form>
+    <p id="msg"></p>
+    <audio id="au1" src="beep.mp3"></audio>
+
+<script>
+let timerId = null;
+
+function show(event) {
+    event.preventDefault();
+    
+    let timeInput = document.getElementById("time");
+    let au1 = document.getElementById("au1");
+    let msg = document.getElementById("msg");
+
+    if (timeInput.value === "") {
+        alert("Time cannot be empty");
+        msg.innerHTML = "";
+        timeInput.focus();
+        return;
+    }
+
+    let t = parseInt(timeInput.value);
+    if (t < 1) {
+        alert("Time should be minimum 1 second");
+        msg.innerHTML = "";
+        timeInput.value = "";
+        timeInput.focus();
+        return;
+    }
+
+    if (timerId) {
+        clearTimeout(timerId);
+    }
+
+    timeInput.disabled = true;
+
+    function updateTime() {
+        if (t > 0) {
+            msg.innerHTML = t + " second(s)";
+            t--;
+            timerId = setTimeout(updateTime, 1000);
+        } else {
+            msg.innerHTML = "✅ Time's up!";
+            au1.play();
+            timeInput.disabled = false;
+        }
+    }
+    updateTime();
+}
+</script>
+</body>
+</html>
